@@ -39,15 +39,16 @@ class MotionCNNDataset(Dataset):
             roadgraph_valid = np.pad(roadgraph_valid, (0, n_to_pad))
             data['roadgraph_data'] = roadgraph_data
             data['roadgraph_valid'] = roadgraph_valid
-        data['raster'] = data['raster'].transpose(2, 0, 1) / 255.
+        data['raster'] = data['raster'].transpose(2, 0, 1).astype(np.float32) / 255.
         data['scenario_id'] = data['scenario_id'].item()
+        data["future_valid"] = data["future_valid"].astype(np.int32)
         return data
 
 
 def dict_to_cuda(data_dict):
     gpu_required_keys = ['raster', 'future_valid', 'future_local']
     for key in gpu_required_keys:
-        data_dict[key] = data_dict[key].cuda()
+        data_dict[key] = data_dict[key].cuda(non_blocking=True)
     return data_dict
 
 

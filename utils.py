@@ -6,7 +6,7 @@ import tensorflow as tf
 def create_tf_dataset(datapath, n_shards, shard_id):
     files = os.listdir(datapath)
     dataset = tf.data.TFRecordDataset(
-        [os.path.join(datapath, f) for f in files], num_parallel_reads=1
+        [os.path.join(datapath, f) for f in files], num_parallel_reads=8
     )
     if n_shards > 1:
         dataset = dataset.shard(n_shards, shard_id)
